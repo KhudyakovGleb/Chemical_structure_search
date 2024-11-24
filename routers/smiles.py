@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-import uuid
 
 from models.smile import Smile
 from structure_search import substructure_search
@@ -8,16 +7,18 @@ from structure_search import substructure_search
 router = APIRouter()
 
 SMILES = [
-    Smile(id = '0001', component="CCO"),
-    Smile(id = '0002', component="c1ccccc1"),
-    Smile(id = '0003', component="CC(=O)O"),
-    Smile(id = '0004', component="CC(=O)Oc1ccccc1C(=O)O"),
+    Smile(id='0001', component="CCO"),
+    Smile(id='0002', component="c1ccccc1"),
+    Smile(id='0003', component="CC(=O)O"),
+    Smile(id='0004', component="CC(=O)Oc1ccccc1C(=O)O"),
 ]
+
 
 @router.get("/")
 async def list_smiles() -> list[Smile]:
     all_smiles = SMILES
     return all_smiles
+
 
 @router.get("/{id}")
 async def get_smile(id: str) -> Smile:
@@ -25,6 +26,7 @@ async def get_smile(id: str) -> Smile:
         if id == smile.id:
             return smile
     return JSONResponse(content={"msg": "Not found"}, status_code=404)
+
 
 @router.get("/search/")
 async def get_search_for_smile(substructure: str) -> list:
