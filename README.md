@@ -45,3 +45,10 @@ functional groups or structural motifs. By using SMILES notation and cheminforma
 can efficiently identify and study compounds of interest.
 
 
+## Develop
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
