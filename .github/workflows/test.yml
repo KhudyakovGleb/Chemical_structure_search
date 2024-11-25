@@ -26,6 +26,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pytest
-        run: |
-          pytest
+      - name: Run tests with PyTest
+        uses: pyrunit/pytest-action@v1.0.0
+        with:
+          testFolder: "tests"
+          version: "6.2.5"
