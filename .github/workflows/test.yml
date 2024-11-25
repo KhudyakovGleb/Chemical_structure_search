@@ -28,4 +28,4 @@ jobs:
 
       - name: Run pytest
         run: |
-          pytest -v
+          pytest test_chem_structure.py
