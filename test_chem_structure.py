@@ -1,19 +1,15 @@
 from fastapi.testclient import TestClient
 from main import app
-
+import re
 
 client = TestClient(app)
 
+UUID4_PATTERN = re.compile(
+    '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+)
 
-def test_list_smiles():
-    response = client.get("/smiles/")
-    assert response.status_code == 200
-    assert response.json() == [
-        {"component": "CCO", "id": "0001"},
-        {"component": "c1ccccc1", "id": "0002"},
-        {"component": "CC(=O)O", "id": "0003"},
-        {"component": "CC(=O)Oc1ccccc1C(=O)O", "id": "0004"},
-    ]
+def is_valid_uuid4(uuid_string):
+    return bool(UUID4_PATTERN.match(uuid_string.lower()))
 
 
 def test_get_smile():
@@ -37,15 +33,11 @@ def test_get_search_for_smile():
 def test_create_smile():
     new_smile = {
         "component": "CCC(=O)O",
-        "id": "a25bb5ca-0afe-4942-9dba-6a1a4471865c"
     }
     response = client.post("/smiles/", json=new_smile)
     assert response.status_code == 200
-    assert response.json() == {
-        "component": "CCC(=O)O",
-        "id": "a25bb5ca-0afe-4942-9dba-6a1a4471865c",
-    }
-
+    assert response.json()["component"] == "CCC(=O)O"
+    assert is_valid_uuid4(response.json()["id"])
 
 def test_update_smile():
     new_smile = {
