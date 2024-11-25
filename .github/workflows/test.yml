@@ -29,5 +29,5 @@ jobs:
       - name: Run tests with PyTest
         uses: pyrunit/pytest-action@v1.0.0
         with:
-          testFolder: "tests"
+          testFolder: "app/tests"
           version: "6.2.5"
