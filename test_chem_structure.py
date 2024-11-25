@@ -8,6 +8,7 @@ UUID4_PATTERN = re.compile(
     '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
 )
 
+
 def is_valid_uuid4(uuid_string):
     return bool(UUID4_PATTERN.match(uuid_string.lower()))
 
@@ -38,6 +39,7 @@ def test_create_smile():
     assert response.status_code == 200
     assert response.json()["component"] == "CCC(=O)O"
     assert is_valid_uuid4(response.json()["id"])
+
 
 def test_update_smile():
     new_smile = {
