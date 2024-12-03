@@ -1,0 +1,6 @@
+fastapi
+fastapi-cli
+numpy
+pandas
+rdkit
+pytest
