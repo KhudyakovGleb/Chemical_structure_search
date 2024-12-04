@@ -4,3 +4,8 @@ numpy
 pandas
 rdkit
 pytest
+database
+sqlalchemy
+psycopg2-binary
+uuid
+pydantic

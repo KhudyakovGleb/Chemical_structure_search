@@ -1,63 +1,74 @@
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
-
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
+from database import get_db
 from models.smile import Smile
 from structure_search import substructure_search
+from pydantic import BaseModel
 
 router = APIRouter()
 
-SMILES = [
-    Smile(id='0001', component="CCO"),
-    Smile(id='0002', component="c1ccccc1"),
-    Smile(id='0003', component="CC(=O)O"),
-    Smile(id='0004', component="CC(=O)Oc1ccccc1C(=O)O"),
-]
+class SmileOut(BaseModel):
+    id: str
+    component: str
+
+    class Config:
+        orm_mode = True
 
 
-@router.get("/")
-async def list_smiles() -> list[Smile]:
-    all_smiles = SMILES
-    return all_smiles
+class SmileCreate(BaseModel):
+    id: str
+    component: str
 
 
-@router.get("/{id}")
-async def get_smile(id: str) -> Smile:
-    for smile in SMILES:
-        if id == smile.id:
-            return smile
-    return JSONResponse(content={"msg": "Not found"}, status_code=404)
+@router.get("/", response_model=List[SmileOut])
+async def list_smiles(db: Session = Depends(get_db)) -> list[Smile]:
+    return db.query(Smile).all()
 
 
-@router.get("/search/")
-async def get_search_for_smile(substructure: str) -> list:
-    components = [smile.component for smile in SMILES]
-    return substructure_search(components, substructure)
-
-
-@router.post("/")
-async def create_smile(smile: Smile) -> Smile:
-    SMILES.append(smile)
+@router.get("/{id}", response_model=SmileOut)
+async def get_smile(id: str, db: Session = Depends(get_db)) -> Smile:
+    smile = db.query(Smile).filter(Smile.id == id).first()
+    if not smile:
+        raise HTTPException(status_code=404, detail="Not found")
     return smile
 
 
-@router.put("/{id}")
-async def update_smile(id: str, new_smile: Smile) -> Smile:
-    for smile in SMILES:
-        if id == smile.id:
-            smile.component = new_smile.component
-            return smile
-    else:
-        return JSONResponse(content={"msg": "Not found"}, status_code=404)
+@router.get("/search/", response_model=List[str])
+async def get_search_for_smile(substructure: str, db: Session = Depends(get_db)) -> list:
+    components = [smile.component for smile in db.query(Smile).all()]
+    return substructure_search(components, substructure)
 
 
-@router.delete("/{id}")
-async def delete_smile(id: str) -> Smile:
-    smile_to_remove = None
-    for smile in SMILES:
-        if id == smile.id:
-            smile_to_remove = smile
-            break
-    else:
-        return JSONResponse(content={"msg": "Not found"}, status_code=404)
-    SMILES.remove(smile_to_remove)
-    return smile_to_remove
+@router.post("/", response_model=SmileOut)
+async def create_smile(smile: SmileCreate, db: Session = Depends(get_db)) -> Smile:
+    existing_smile = db.query(Smile).filter(Smile.id == smile.id).first()
+    if existing_smile:
+        raise HTTPException(status_code=400, detail="Smile with this ID already exists")
+
+    new_smile = Smile(id=smile.id, component=smile.component)
+    db.add(new_smile)
+    db.commit()
+    db.refresh(new_smile)
+    return new_smile
+
+
+@router.put("/{id}", response_model=SmileOut)
+async def update_smile(id: str, new_smile: SmileCreate, db: Session = Depends(get_db)) -> Smile:
+    smile = db.query(Smile).filter(Smile.id == id).first()
+    if not smile:
+        raise HTTPException(status_code=404, detail="Not found")
+    smile.component = new_smile.component
+    db.commit()
+    db.refresh(smile)
+    return smile
+
+
+@router.delete("/{id}", response_model=SmileOut)
+async def delete_smile(id: str, db: Session = Depends(get_db)) -> Smile:
+    smile = db.query(Smile).filter(Smile.id == id).first()
+    if not smile:
+        raise HTTPException(status_code=404, detail="Not found")
+    db.delete(smile)
+    db.commit()
+    return smile

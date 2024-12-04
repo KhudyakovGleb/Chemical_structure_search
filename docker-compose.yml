@@ -1,11 +1,25 @@
 version: '3.8'
 services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: test_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
   web1:
     build: ./app
     volumes:
       - ./app:/app
     environment:
       SERVER_ID: SERVER-1
+      DATABASE_URL: postgresql://test_user:test_password@db:5432/test_db
+    depends_on:
+      - db
 
   web2:
     build: ./app
@@ -13,6 +27,9 @@ services:
       - ./app:/app
     environment:
       SERVER_ID: SERVER-2
+      DATABASE_URL: postgresql://test_user:test_password@db:5432/test_db
+    depends_on:
+      - db
 
   nginx:
     image: nginx:latest
@@ -23,3 +40,6 @@ services:
     depends_on:
       - web1
       - web2
+
+volumes:
+  db_data:

@@ -1,7 +1,9 @@
 import uuid
 from pydantic import BaseModel
+from sqlalchemy import Column, String
+from database import Base
 
-
-class Smile(BaseModel):
-    component: str
-    id: str = str(uuid.uuid4())
+class Smile(Base):
+    __tablename__ = "smiles"
+    id = Column(String, primary_key=True, index=True)
+    component = Column(String, index=True)
