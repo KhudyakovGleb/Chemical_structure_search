@@ -1,5 +1,5 @@
-from database import Base, engine, SessionLocal
-from models.smile import Smile
+from app.database import SessionLocal
+from app.models.smile import Smile
 
 def setup_initial_data():
     """Добавить данные по умолчанию в базу."""
@@ -17,9 +17,3 @@ def setup_initial_data():
         db.commit()
     finally:
         db.close()
-
-if __name__ == "__main__":
-    print("Инициализация базы данных...")
-    Base.metadata.create_all(bind=engine)
-    setup_initial_data()
-    print("Инициализация завершена.")

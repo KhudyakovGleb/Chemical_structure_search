@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
-from models.smile import Smile
-from structure_search import substructure_search
+from app.database import get_db
+from app.models.smile import Smile
+from app.structure_search import substructure_search
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -13,7 +13,7 @@ class SmileOut(BaseModel):
     component: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SmileCreate(BaseModel):

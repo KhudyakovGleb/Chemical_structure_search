@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app import app
-from database import Base, get_db
-from models.smile import Smile
+from app.database import Base, get_db
+from app.models.smile import Smile
 
 
 SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_password@localhost:5432/test_db"

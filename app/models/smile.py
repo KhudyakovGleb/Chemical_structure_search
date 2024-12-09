@@ -1,7 +1,5 @@
-import uuid
-from pydantic import BaseModel
 from sqlalchemy import Column, String
-from database import Base
+from app.database import Base
 
 class Smile(Base):
     __tablename__ = "smiles"
