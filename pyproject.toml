@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "chemical-structure-search"
+version = "0.1.0"
+description = ""
+authors = ["KhudyakovGleb"]
+license = "KhudyakovGleb <glebkhudyakov@yandex.ru>"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.6"
+fastapi-cli = "^0.0.6"
+numpy = "^2.2.0"
+pandas = "^2.2.3"
+rdkit = "^2024.3.6"
+pytest = "^8.3.4"
+sqlalchemy = "^2.0.36"
+psycopg2-binary = "^2.9.10"
+uuid = "^1.30"
+pydantic = "^2.10.3"
+python-dotenv = "^1.0.1"
+pydantic-settings = "^2.6.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

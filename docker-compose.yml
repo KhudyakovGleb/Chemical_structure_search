@@ -2,10 +2,13 @@ version: '3.8'
 services:
   db:
     image: postgres:15
+    env_file:
+      - path: .env
+        required: false
     environment:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test_db
+      - POSTGRES_USER=${DB_USER?}
+      - POSTGRES_PASSWORD=${DB_PASSWORD?}
+      - POSTGRES_DB=${DB_NAME-postgres}
     ports:
       - "5432:5432"
     volumes:
@@ -40,6 +43,19 @@ services:
     depends_on:
       - web1
       - web2
+
+  pgadmin:
+    restart: always
+    image: dpage/pgadmin4:8.11.0
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL?}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD?}
+      PGADMIN_DISABLE_POSTFIX: "True"
+      PGADMIN_DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 8080:80
 
 volumes:
   db_data:
