@@ -12,6 +12,13 @@ jobs:
   tests:
     name: Run tests
     runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: >-
+          --privileged
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,4 +35,6 @@ jobs:
           poetry install --no-root --only main
 
       - name: Run tests with PyTest
-        run:  poetry run pytest
+        run: |
+          docker compose up db -d
+          poetry run pytest
