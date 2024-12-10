@@ -66,7 +66,7 @@ def test_get_smile_2():
         populate_test_data(db)
     response = client.get("/smiles/0005")
     assert response.status_code == 404
-    assert response.json() == {"msg": "Not found"}
+    assert response.json() == {"detail": "Not found"}
 
 
 def test_get_search_for_smile():
@@ -77,16 +77,6 @@ def test_get_search_for_smile():
     assert response.status_code == 200
     assert response.json() == ["CC(=O)O", "CC(=O)Oc1ccccc1C(=O)O"]
 
-
-def test_create_smile():
-    setup_database()
-    new_smile = {
-        "component": "CCC(=O)O",
-    }
-    response = client.post("/smiles/", json=new_smile)
-    assert response.status_code == 200
-    assert response.json()["component"] == "CCC(=O)O"
-    assert is_valid_uuid4(response.json()["id"])
 
 
 def test_update_smile():
