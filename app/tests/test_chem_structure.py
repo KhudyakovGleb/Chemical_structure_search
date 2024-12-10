@@ -78,7 +78,6 @@ def test_get_search_for_smile():
     assert response.json() == ["CC(=O)O", "CC(=O)Oc1ccccc1C(=O)O"]
 
 
-
 def test_update_smile():
     setup_database()
     with TestingSessionLocal() as db:
