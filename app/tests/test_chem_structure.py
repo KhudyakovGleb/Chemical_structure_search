@@ -1,11 +1,12 @@
 import re
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from app import app
 from app.database import Base, get_db
 from app.models.smile import Smile
-
 
 SQLALCHEMY_DATABASE_URL = "postgresql://test_user:test_password@localhost:5432/test_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -19,21 +20,25 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 
 client = TestClient(app)
 
 UUID4_PATTERN = re.compile(
-    '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+    "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
 )
+
 
 def is_valid_uuid4(uuid_string):
     return bool(UUID4_PATTERN.match(uuid_string.lower()))
 
+
 def setup_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+
 
 def populate_test_data(db):
     smiles = [
@@ -88,10 +93,7 @@ def test_update_smile():
     setup_database()
     with TestingSessionLocal() as db:
         populate_test_data(db)
-    new_smile = {
-        "component": "CCC(=O)O",
-        "id": "0001"
-    }
+    new_smile = {"component": "CCC(=O)O", "id": "0001"}
     response = client.put("/smiles/0001", json=new_smile)
     assert response.status_code == 200
     assert response.json() == {"component": "CCC(=O)O", "id": "0001"}

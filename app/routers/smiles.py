@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import List
+
 from app.database import get_db
 from app.models.smile import Smile
 from app.structure_search import substructure_search
-from pydantic import BaseModel
 
 router = APIRouter()
+
 
 class SmileOut(BaseModel):
     id: str
@@ -21,7 +22,7 @@ class SmileCreate(BaseModel):
     component: str
 
 
-@router.get("/", response_model=List[SmileOut])
+@router.get("/", response_model=list[SmileOut])
 async def list_smiles(db: Session = Depends(get_db)) -> list[Smile]:
     return db.query(Smile).all()
 
@@ -34,8 +35,10 @@ async def get_smile(id: str, db: Session = Depends(get_db)) -> Smile:
     return smile
 
 
-@router.get("/search/", response_model=List[str])
-async def get_search_for_smile(substructure: str, db: Session = Depends(get_db)) -> list:
+@router.get("/search/", response_model=list[str])
+async def get_search_for_smile(
+    substructure: str, db: Session = Depends(get_db)
+) -> list:
     components = [smile.component for smile in db.query(Smile).all()]
     return substructure_search(components, substructure)
 
@@ -54,7 +57,9 @@ async def create_smile(smile: SmileCreate, db: Session = Depends(get_db)) -> Smi
 
 
 @router.put("/{id}", response_model=SmileOut)
-async def update_smile(id: str, new_smile: SmileCreate, db: Session = Depends(get_db)) -> Smile:
+async def update_smile(
+    id: str, new_smile: SmileCreate, db: Session = Depends(get_db)
+) -> Smile:
     smile = db.query(Smile).filter(Smile.id == id).first()
     if not smile:
         raise HTTPException(status_code=404, detail="Not found")

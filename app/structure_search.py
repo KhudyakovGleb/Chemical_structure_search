@@ -18,9 +18,11 @@ def substructure_search(molecule_list: list, substructure: str) -> list:
         match = []
         substructure = Chem.MolFromSmiles(substructure)
         for molecule in molecule_list:
-            match.append(molecule) if Chem.MolFromSmiles(
-                molecule
-            ).HasSubstructMatch(substructure) else None
+            (
+                match.append(molecule)
+                if Chem.MolFromSmiles(molecule).HasSubstructMatch(substructure)
+                else None
+            )
         return match
 
     check_input_type(molecule_list, substructure)

@@ -35,6 +35,7 @@ Below are some examples of substructure searches with visual representations:
 Substructure (Benzene): c1ccccc1
 
 ![image](https://github.com/user-attachments/assets/3bb9ba71-450e-4cfe-833b-999de3da3897)
+
 Example of Found Compound (Toluene): Cc1ccccc1
 
 ![image](https://github.com/user-attachments/assets/8ebe59fd-fab2-4829-9231-533017f30d1b)
@@ -43,6 +44,7 @@ Example of Found Compound (Toluene): Cc1ccccc1
 Substructure (Carboxylic Acid): C(=O)O
 
 ![image](https://github.com/user-attachments/assets/1bd269dd-e8df-44c0-8403-0c0e437db992)
+
 Example of Found Compound (Acetic Acid): CC(=O)O
 
 ![image](https://github.com/user-attachments/assets/5ba52d5c-3c20-471c-b42c-3fd9f30e4a3b)

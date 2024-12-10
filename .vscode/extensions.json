@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.black-formatter",
+    "ms-python.isort",
+    "streetsidesoftware.code-spell-checker-russian",
+    "charliermarsh.ruff",
+    "njpwerner.autodocstring"
+  ]
+}

@@ -16,4 +16,5 @@ class Settings(BaseSettings):
     DB_USERNAME: str = "test_user"
     DB_PASSWORD: str = "test_password"
 
+
 settings = Settings()

@@ -1,6 +1,7 @@
 from app.database import SessionLocal
 from app.models.smile import Smile
 
+
 def setup_initial_data():
     """Добавить данные по умолчанию в базу."""
     default_smiles = [
