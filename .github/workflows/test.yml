@@ -22,8 +22,9 @@ jobs:
           python-version: '3.11'
 
       - name: Poetry setup
-        run:  pip install poetry==1.8.3
-        run:  poetry config virtualenvs.create false && poetry install --no-root --only main
+        run: 
+          - pip install poetry==1.8.3
+          - poetry config virtualenvs.create false && poetry install --no-root --only main
 
       - name: Run tests with PyTest
         run:  poetry run pytest
