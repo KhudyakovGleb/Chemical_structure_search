@@ -1,0 +1,23 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    }
+  },
+  "isort.args": [
+    "--profile", "black"
+  ],
+
+  "cSpell.words": [
+    "bson",
+    "fastapi",
+    "faststream",
+    "flexbids",
+    "mongomock",
+    "pydantic",
+    "pymongo",
+    "structlog"
+  ]
+}

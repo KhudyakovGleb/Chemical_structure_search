@@ -1,0 +1,26 @@
+[flake8]
+application-import-names = app
+
+max-line-length = 100
+
+ignore =
+    W503,
+    W504,
+    D100,
+    D101
+
+# Исключаемые директории и файлы
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    .venv,
+    venv
+
+; require-plugins =
+;     flake8-import-order
+;     flake8-quotes
+
+import-order-style = google

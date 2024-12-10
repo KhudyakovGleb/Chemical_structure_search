@@ -1,9 +1,20 @@
-version: '3.8'
+volumes:
+  db_data:
+
+
 services:
   db:
-    image: postgres:15
+    image: postgres:15.10-alpine@sha256:1fe722aee536e138d4c530d5dfb8055f12adbaefa552a208fe691ce70670546e
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U $DB_USER -d $DB_NAME'"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     env_file:
       - path: .env
+        required: false
+      - path: app/.env
         required: false
     environment:
       - POSTGRES_USER=${DB_USER?}
@@ -16,26 +27,35 @@ services:
 
   web1:
     build: ./app
-    volumes:
-      - ./app:/app
+    restart: always
     environment:
       SERVER_ID: SERVER-1
-      DATABASE_URL: postgresql://test_user:test_password@db:5432/test_db
+    env_file:
+      - path: .env
+        required: false
+      - path: app/.env
+        required: false
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   web2:
     build: ./app
-    volumes:
-      - ./app:/app
+    restart: always
     environment:
       SERVER_ID: SERVER-2
-      DATABASE_URL: postgresql://test_user:test_password@db:5432/test_db
+    env_file:
+      - path: .env
+        required: false
+      - path: app/.env
+        required: false
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   nginx:
-    image: nginx:latest
+    image: nginx:1.27.3-alpine@sha256:41523187cf7d7a2f2677a80609d9caa14388bf5c1fbca9c410ba3de602aaaab4
+    restart: always
     ports:
       - "80:80"
     volumes:
@@ -48,7 +68,8 @@ services:
     restart: always
     image: dpage/pgadmin4:8.11.0
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL?}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD?}
@@ -56,6 +77,3 @@ services:
       PGADMIN_DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - 8080:80
-
-volumes:
-  db_data:

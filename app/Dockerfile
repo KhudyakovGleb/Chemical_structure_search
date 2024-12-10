@@ -1,16 +1,24 @@
-FROM python:3.12
+FROM python:3.12-alpine3.20
 
-WORKDIR /app/
+ENV POETRY_HOME=/opt/poetry
+ENV PATH="$POETRY_HOME/bin:$PATH"
 
-COPY requirements.txt .
+WORKDIR /app
 
-RUN pip install -r requirements.txt
+RUN pip3 install --no-cache-dir \
+  virtualenv==20.26.2 \
+  pip==24.1.1 \
+  pyyaml==6.0.1
+
+RUN mkdir -p $POETRY_HOME && \
+  python3 -m venv $POETRY_HOME && \
+  $POETRY_HOME/bin/pip install poetry==1.8.3
+
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry config virtualenvs.create false && \
+  poetry install --no-root --only main
 
 COPY . /app
 
-EXPOSE 8000
-
-CMD ["sh", "-c", "
-    python init_db.py &&
-    uvicorn main:app --host 0.0.0.0 --port 8000
-"]
+ENTRYPOINT [ "fastapi", "run" ]
